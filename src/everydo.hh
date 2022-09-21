@@ -6,22 +6,39 @@
 
 #include <string>
 #include <memory>
+#include <exception>
+#include <sstream>
 #include "sqlite3.h"
-#include "sqlite3ext.h"
-
 
 class Context {
 
 };
 
 
-class SqlContext {
+class SqlDatabase {
 private:
+   std::string filename;
    sqlite3* ppDb;
 
 public:
-    SqlContext(): ppDb(nullptr) {}
-    ~SqlContext() = default;
+    explicit SqlDatabase(const char* fn): filename(fn), ppDb(nullptr) {
+        int err = sqlite3_open_v2(fn, &ppDb, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr);
+        if (err!=SQLITE_OK) {
+            std::ostringstream s("Unable to open '");
+            s << filename << "'";
+            throw std::runtime_error(s.str());
+        }
+    }
+    SqlDatabase(): ppDb(nullptr) {}
+
+    ~SqlDatabase() {
+        int err = sqlite3_close_v2(ppDb);
+    }
+
+    void open() {}
+    void close() {}
+    void set_filename(const char* fn) {}
+
 };
 
 
@@ -31,7 +48,6 @@ class SqlStatement {
 
 
 };
-
 
 
 // SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
