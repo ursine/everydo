@@ -40,7 +40,7 @@ include_directories("src")
 # Set defines
 set(CMAKE_CXX_STANDARD 20)
 
-add_library(libeverydo STATIC "src/sqlite3.c" "src/everydo.hh" "src/everydo.cc")
+add_library(libeverydo STATIC "src/sqlite3.c" "src/everydo.hh" "src/everydo.cc" "src/exceptions.h")
 
 add_executable(testexecuter "src/testexecuter.cc")
 target_link_libraries(testexecuter libeverydo Catch2::Catch2WithMain)

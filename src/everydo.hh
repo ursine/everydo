@@ -9,6 +9,7 @@
 #include <exception>
 #include <sstream>
 #include "sqlite3.h"
+#include "exceptions.h"
 
 class Context {
 
