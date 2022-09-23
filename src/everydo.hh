@@ -11,44 +11,67 @@
 #include "sqlite3.h"
 #include "exceptions.h"
 
-class Context {
-
-};
+namespace everydo {
 
 
-class SqlDatabase {
-private:
-   std::string filename;
-   sqlite3* ppDb;
+    class Context {
+    private:
 
-public:
-    explicit SqlDatabase(const char* fn): filename(fn), ppDb(nullptr) {
-        int err = sqlite3_open_v2(fn, &ppDb, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr);
-        if (err!=SQLITE_OK) {
-            std::ostringstream s("Unable to open '");
-            s << filename << "'";
-            throw std::runtime_error(s.str());
+    public:
+        Context() {
+            int err = sqlite3_initialize();
+            if (err!=SQLITE_OK) {
+                // TODO: Throw Xception
+            }
         }
-    }
-    SqlDatabase(): ppDb(nullptr) {}
 
-    ~SqlDatabase() {
-        int err = sqlite3_close_v2(ppDb);
-    }
+        ~Context() {
+            int err = sqlite3_shutdown();
+            if (err!=SQLITE_OK) {
+                // TODO: Throw Xception
+            }
+        }
 
-    void open() {}
-    void close() {}
-    void set_filename(const char* fn) {}
-
-};
+    };
 
 
-class SqlStatement {
+    class SqlDatabase {
+    private:
+        std::string filename;
+        sqlite3 *ppDb;
+
+    public:
+        explicit SqlDatabase(const char *fn) : filename(fn), ppDb(nullptr) {
+            int err = sqlite3_open_v2(fn, &ppDb, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr);
+            if (err != SQLITE_OK) {
+                std::ostringstream s("Unable to open '");
+                s << filename << "'";
+                throw std::runtime_error(s.str());
+            }
+        }
+
+        SqlDatabase() : ppDb(nullptr) {}
+
+        ~SqlDatabase() {
+            int err = sqlite3_close_v2(ppDb);
+            if (err != SQLITE_OK) {
+                // TODO: Throw exception
+            }
+        }
+
+        void open() {}
+
+        void close() {}
+
+        void set_filename(const char *fn) {}
+
+    };
 
 
+    class SqlStatement {
 
 
-};
+    };
 
 
 // SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
@@ -65,14 +88,16 @@ int sqlite3_open_v2(
 
 
 
-class Event {
-public:
-    Event() = default;
+    class Event {
+    public:
+        Event() = default;
 
-    std::wstring get_name() {}
-};
+        std::wstring get_name() {}
+    };
 
 
-class Configuration {
+    class Configuration {
 
-};
+    };
+
+}

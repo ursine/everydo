@@ -22,4 +22,7 @@ TEST_CASE("Open Database", "[Database]") {
     errno_t err = tmpnam_s(filename, sizeof(filename));
 
     SqlDatabase sdb(filename);
+
+
+
 }
