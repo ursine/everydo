@@ -6,36 +6,27 @@
 
 #include <stdexcept>
 #include <string>
+#include <format>
+#include <sqlite3.h>
 
-/*class SqlError: public std::runtime_error {
-private:
-    int err_code;
-    std::string err_str;
+class SqlError: public std::runtime_error {
+protected:
+    const int err_code;
+    const int ext_err_code;
+    const std::string err_str;
+    const std::string output;
 
 public:
-    SqlError(sqlite3* const db):
-      err_code(sqlite3_errcode(db)), err_str(sqlite3_errstr(err_code)), std::runtime_error(err_str) {}
+    SqlError(const char* file, int line, const char* func, sqlite3* db, const std::string& msg):
+      err_code(sqlite3_errcode(db)), ext_err_code(sqlite3_extended_errcode(db)), err_str{sqlite3_errstr(err_code)},
+      output(std::string("Exception in ")+func+" - "+file+":"+std::to_string(line)+" -- "+msg+" ("+err_str+")"),
+      std::runtime_error(output) {}
+};
 
+class SqlInitializationException: public SqlError {
+public:
+    SqlInitializationException(const char *file, int line, const char *func, sqlite3 *db, const std::string &msg):
+        SqlError(file, line, func, db, msg) {}
+};
 
-};*/
-
-namespace everydo {
-
-
-    inline std::string error_factory(sqlite3* const db, const char* func, const char* file, const char* line) {
-        const int err_code = sqlite3_errcode(db);
-        const int ext_errcode = sqlite3_extended_errcode(db);
-        std::string err_msg(sqlite3_errmsg(db));
-
-    }
-
-
-
-
-}
-
-
-//sqlite3_errstr(mErrcode);
-//sqlite3_extended_errcode(apSQLite)
-//sqlite3_errcode(apSQLite)
-
+#define SqlInitEx(db, msg) SqlInitializationException(__FILE__, __LINE__, __PRETTY_FUNCTION__, db, msg)

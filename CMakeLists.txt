@@ -18,6 +18,14 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(Catch2)
 
+# Boost
+FetchContent_Declare(
+        Boost
+        GIT_REPOSITORY "https://github.com/boostorg/boost.git"
+        GIT_TAG "boost-1.80.0"
+)
+FetchContent_MakeAvailable(Boost)
+
 # Configure optional linking
 include(CheckIPOSupported)
 check_ipo_supported(RESULT lto_supported OUTPUT error)
@@ -34,13 +42,11 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
 
 set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 
-include_directories("src")
-
-
 # Set defines
 set(CMAKE_CXX_STANDARD 20)
 
-add_library(libeverydo STATIC "src/sqlite3.c" "src/everydo.hh" "src/everydo.cc" "src/exceptions.h")
+add_library(libeverydo STATIC "src/sqlite3.c" "src/everydo.hh" "src/everydo.cc" "src/exceptions.h"
+        "${Boost_INCLUDE_DIRS}")
 
 add_executable(testexecuter "src/testexecuter.cc")
 target_link_libraries(testexecuter libeverydo Catch2::Catch2WithMain)

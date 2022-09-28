@@ -8,27 +8,25 @@
 #include <memory>
 #include <exception>
 #include <sstream>
+#include <boost/log/trivial.hpp>
 #include "sqlite3.h"
-#include "exceptions.h"
 
 namespace everydo {
 
 
-    class Context {
-    private:
+class Context {
+private:
 
-    public:
+public:
         Context() {
             int err = sqlite3_initialize();
-            if (err!=SQLITE_OK) {
-                // TODO: Throw Xception
-            }
+            if (err!=SQLITE_OK) throw std::runtime_error("Unable to initialize SQLITE3");
         }
 
         ~Context() {
             int err = sqlite3_shutdown();
             if (err!=SQLITE_OK) {
-                // TODO: Throw Xception
+
             }
         }
 

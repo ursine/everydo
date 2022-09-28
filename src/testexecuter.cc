@@ -21,8 +21,6 @@ TEST_CASE("Open Database", "[Database]") {
     char filename[500];
     errno_t err = tmpnam_s(filename, sizeof(filename));
 
-    SqlDatabase sdb(filename);
-
-
+    everydo::Context ctx;
 
 }
